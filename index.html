@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALEX VOSS — Visual Storyteller</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0906;
+    --surface: #111009;
+    --cream: #f0e6d3;
+    --gold: #c9a96e;
+    --gold-dim: #7a6340;
+    --rust: #b85c38;
+    --text: #e8dcc8;
+    --muted: #6b5f4e;
+    --border: rgba(201,169,110,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+    opacity: 0.6;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 24px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid transparent;
+    transition: all 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(10,9,6,0.92);
+    border-bottom-color: var(--border);
+    backdrop-filter: blur(12px);
+    padding: 16px 48px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+    text-decoration: none;
+  }
+  .logo span { color: var(--gold); }
+  .nav-links {
+    display: flex; gap: 40px; list-style: none;
+    align-items: center;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 64px 80px;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--gold);
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    font-weight: 900;
+    line-height: 0.95;
+    color: var(--cream);
+    margin-bottom: 32px;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 400;
+  }
+  .hero-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 380px;
+    margin-bottom: 48px;
+  }
+  .hero-cta {
+    display: flex; gap: 20px; align-items: center;
+  }
+  .btn {
+    padding: 14px 36px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--bg);
+    border: 1px solid var(--gold);
+  }
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--gold);
+  }
+  .btn-ghost {
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .btn-ghost:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.75;
+    filter: sepia(20%) contrast(1.1);
+    transition: opacity 0.5s, transform 8s ease;
+    transform: scale(1.03);
+  }
+  .hero-right:hover .hero-img {
+    transform: scale(1.0);
+    opacity: 0.9;
+  }
+  .hero-img-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, var(--bg) 0%, transparent 40%);
+    z-index: 1;
+  }
+  .hero-counter {
+    position: absolute;
+    bottom: 40px; right: 40px;
+    z-index: 2;
+    text-align: right;
+  }
+  .hero-counter .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(201,169,110,0.15);
+    line-height: 1;
+  }
+  .hero-counter .label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    z-index: 5;
+  }
+  .scroll-indicator span {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* Section base */
+  section { padding: 120px 64px; }
+  .section-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::before {
+    content: ''; width: 24px; height: 1px; background: var(--gold);
+  }
+
+  /* Live Feed */
+  .feed-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 64px;
+  }
+  .feed-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    color: var(--cream);
+  }
+  .live-badge {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--rust);
+    text-transform: uppercase;
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--rust);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(184,92,56,0.4); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(184,92,56,0); }
+  }
+  .social-tabs {
+    display: flex; gap: 0;
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+    width: fit-content;
+  }
+  .tab {
+    padding: 10px 28px;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: none;
+    transition: all 0.3s;
+    border-right: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tab:last-child { border-right: none; }
+  .tab.active, .tab:hover {
+    background: var(--gold);
+    color: var(--bg);
+  }
+  .tab svg { width: 14px; height: 14px; }
+
+  /* Masonry Grid */
+  .masonry {
+    columns: 4;
+    column-gap: 16px;
+  }
+  .post-card {
+    break-inside: avoid;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    group: true;
+  }
+  .post-card img {
+    width: 100%;
+    display: block;
+    filter: sepia(15%) contrast(1.05);
+    transition: transform 0.5s ease, filter 0.4s;
+  }
+  .post-card:hover img {
+    transform: scale(1.05);
+    filter: sepia(0%) contrast(1.1);
+  }
+  .post-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,9,6,0.9) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+  }
+  .post-card:hover .post-overlay { opacity: 1; }
+  .post-platform {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .post-caption {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    color: var(--cream);
+    line-height: 1.4;
+  }
+  .post-stats {
+    display: flex; gap: 12px;
+    margin-top: 10px;
+    font-size: 0.6rem;
+    color: var(--muted);
+  }
+  .stat { display: flex; align-items: center; gap: 4px; }
+
+  /* About */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .about-img-wrap {
+    position: relative;
+  }
+  .about-img-frame {
+    position: relative;
+    padding: 20px 20px 20px 0;
+  }
+  .about-img-frame::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    border: 1px solid var(--gold-dim);
+    pointer-events: none;
+  }
+  .about-img-frame img {
+    width: 100%;
+    display: block;
+    filter: sepia(20%);
+    position: relative;
+    z-index: 1;
+  }
+  .about-stats-strip {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    margin-top: 32px;
+  }
+  .about-stat {
+    flex: 1;
+    padding: 20px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+  .about-stat:last-child { border-right: none; }
+  .about-stat .n {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+  .about-stat .l {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+  }
+  .about-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 24px;
+    line-height: 1.15;
+  }
+  .about-content h2 em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 300;
+  }
+  .about-content p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.85;
+    margin-bottom: 20px;
+  }
+  .services-list {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 36px;
+  }
+  .service-item {
+    padding: 16px;
+    border: 1px solid var(--border);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    transition: all 0.3s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .service-item::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .service-item:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .service-item:hover::before { background: var(--gold); }
+
+  /* Portfolio */
+  .portfolio-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+  .portfolio-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 64px;
+  }
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 16px;
+  }
+  .port-item {
+    overflow: hidden;
+    position: relative;
+    cursor: none;
+  }
+  .port-item:nth-child(1) { grid-column: span 7; grid-row: span 2; }
+  .port-item:nth-child(2) { grid-column: span 5; }
+  .port-item:nth-child(3) { grid-column: span 5; }
+  .port-item:nth-child(4) { grid-column: span 4; }
+  .port-item:nth-child(5) { grid-column: span 4; }
+  .port-item:nth-child(6) { grid-column: span 4; }
+  .port-item img {
+    width: 100%; height: 100%;
+    min-height: 220px;
+    object-fit: cover;
+    display: block;
+    filter: sepia(20%) contrast(1.05);
+    transition: transform 0.6s ease, filter 0.4s;
+  }
+  .port-item:hover img {
+    transform: scale(1.06);
+    filter: sepia(0%) contrast(1.15);
+  }
+  .port-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 24px 20px 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .port-item:hover .port-label { transform: translateY(0); }
+  .port-cat {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .port-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--cream);
+  }
+
+  /* Social Links */
+  .socials-section {
+    padding: 80px 64px;
+    border-top: 1px solid var(--border);
+  }
+  .socials-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 48px;
+  }
+  .social-card {
+    background: var(--bg);
+    padding: 48px 36px;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.3s;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 16px;
+  }
+  .social-card:hover { background: rgba(201,169,110,0.05); }
+  .social-icon {
+    width: 48px; height: 48px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s;
+  }
+  .social-card:hover .social-icon {
+    border-color: var(--gold);
+    background: rgba(201,169,110,0.1);
+  }
+  .social-icon svg { width: 20px; height: 20px; }
+  .social-name {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.3s;
+  }
+  .social-card:hover .social-name { color: var(--gold); }
+  .social-handle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--cream);
+  }
+  .social-followers {
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .social-followers span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+
+  /* Testimonials */
+  .testimonials {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .quote-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 64px;
+  }
+  .quote-card {
+    border: 1px solid var(--border);
+    padding: 40px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .quote-card:hover { border-color: var(--gold-dim); }
+  .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: var(--gold-dim);
+    line-height: 0.5;
+    margin-bottom: 24px;
+    display: block;
+  }
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 28px;
+  }
+  .quote-author {
+    display: flex; align-items: center; gap: 14px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+  .author-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    object-fit: cover;
+    filter: sepia(30%);
+  }
+  .author-info .name {
+    font-size: 0.7rem;
+    color: var(--cream);
+    letter-spacing: 0.1em;
+  }
+  .author-info .role {
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-top: 3px;
+    letter-spacing: 0.1em;
+  }
+
+  /* Contact */
+  .contact-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .contact-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.05;
+    margin-bottom: 24px;
+  }
+  .contact-content h2 em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 400;
+  }
+  .contact-content p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 40px;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 16px; }
+  .contact-link {
+    display: flex; align-items: center; gap: 16px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    padding: 16px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .contact-link:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .contact-link svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--gold); }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-label {
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .form-input, .form-textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 14px 18px;
+    outline: none;
+    transition: border-color 0.3s;
+    appearance: none;
+    border-radius: 0;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--gold); }
+  .form-textarea { resize: vertical; min-height: 120px; }
+  ::placeholder { color: var(--muted); }
+
+  /* Footer */
+  footer {
+    padding: 40px 64px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.15em;
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-copy {
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+  }
+  .footer-links {
+    display: flex; gap: 24px;
+  }
+  .footer-links a {
+    font-size: 0.6rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* Animations */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Ticker */
+  .ticker-wrap {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .ticker {
+    display: flex;
+    width: max-content;
+    animation: ticker 30s linear infinite;
+  }
+  .ticker-item {
+    display: flex; align-items: center; gap: 24px;
+    padding: 0 40px;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .ticker-item span { color: var(--gold); }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Instagram feed loading spinner */
+  .spin-ring {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .ig-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.55rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold);
+    background: rgba(201,169,110,0.08);
+    border: 1px solid var(--border);
+    padding: 4px 10px; margin-bottom: 6px;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    nav.scrolled { padding: 14px 24px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 120px 24px 60px; }
+    .hero-right { height: 50vh; }
+    section { padding: 80px 24px; }
+    .masonry { columns: 2; }
+    .about-grid { grid-template-columns: 1fr; }
+    .socials-grid { grid-template-columns: 1fr 1fr; }
+    .quote-grid { grid-template-columns: 1fr; }
+    .contact-section { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }
+    .portfolio-grid { display: block; }
+    .port-item { margin-bottom: 8px; }
+    .port-item img { min-height: 200px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Nav -->
+<nav id="nav">
+  <a href="#" class="logo">ALEX<span>.</span>VOSS</a>
+  <ul class="nav-links">
+    <li><a href="#feed">Feed</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Visual Storyteller · Content Creator</div>
+    <h1>Where light<br>meets <em>story</em></h1>
+    <p class="hero-desc">
+      Capturing raw moments, golden hours, and the texture of everyday life — for brands, artists, and souls who believe in the power of a frame.
+    </p>
+    <div class="hero-cta">
+      <a href="#work" class="btn btn-primary">View Portfolio</a>
+      <a href="#contact" class="btn btn-ghost">Book a Session</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img class="hero-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&auto=format&fit=crop&q=80" alt="hero">
+    <div class="hero-img-overlay"></div>
+    <div class="hero-counter">
+      <div class="num">847K</div>
+      <div class="label">Followers Across Platforms</div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item">Landscape <span>·</span></div>
+    <div class="ticker-item">Editorial <span>·</span></div>
+    <div class="ticker-item">Portrait <span>·</span></div>
+    <div class="ticker-item">Street Photography <span>·</span></div>
+    <div class="ticker-item">Brand Content <span>·</span></div>
+    <div class="ticker-item">Travel <span>·</span></div>
+    <div class="ticker-item">Architecture <span>·</span></div>
+    <div class="ticker-item">Documentary <span>·</span></div>
+    <div class="ticker-item">Landscape <span>·</span></div>
+    <div class="ticker-item">Editorial <span>·</span></div>
+    <div class="ticker-item">Portrait <span>·</span></div>
+    <div class="ticker-item">Street Photography <span>·</span></div>
+    <div class="ticker-item">Brand Content <span>·</span></div>
+    <div class="ticker-item">Travel <span>·</span></div>
+    <div class="ticker-item">Architecture <span>·</span></div>
+    <div class="ticker-item">Documentary <span>·</span></div>
+  </div>
+</div>
+
+<!-- Live Social Feed -->
+<section class="feed-section" id="feed">
+  <div class="feed-header reveal">
+    <div>
+      <div class="section-label">Social Feed</div>
+      <div class="feed-title">Latest from the lens</div>
+    </div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Live updates
+    </div>
+  </div>
+
+  <div class="social-tabs reveal">
+    <button class="tab active" onclick="filterFeed('all', this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      All
+    </button>
+    <button class="tab" onclick="filterFeed('instagram', this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      Instagram
+    </button>
+    <button class="tab" onclick="filterFeed('tiktok', this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.72a4.85 4.85 0 01-1.02-.03z"/></svg>
+      TikTok
+    </button>
+    <button class="tab" onclick="filterFeed('youtube', this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#0a0906"/></svg>
+      YouTube
+    </button>
+    <button class="tab" onclick="filterFeed('twitter', this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Twitter/X
+    </button>
+  </div>
+
+  <!-- Instagram feed state -->
+  <div id="feedStatus" style="display:none;padding:60px 0;text-align:center;">
+    <div class="feed-loading" id="feedLoading">
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;color:var(--muted);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;">
+        <div class="spin-ring"></div>
+        Loading @yeoguess...
+      </div>
+    </div>
+    <div class="feed-error" id="feedError" style="display:none;color:var(--rust);font-size:0.75rem;letter-spacing:0.1em;"></div>
+  </div>
+
+  <div class="masonry reveal" id="feedGrid"></div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-img-wrap reveal">
+      <div class="about-img-frame">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&auto=format&fit=crop&q=80" alt="Alex Voss">
+      </div>
+      <div class="about-stats-strip">
+        <div class="about-stat"><span class="n">8+</span><span class="l">Years</span></div>
+        <div class="about-stat"><span class="n">200+</span><span class="l">Projects</span></div>
+        <div class="about-stat"><span class="n">847K</span><span class="l">Followers</span></div>
+      </div>
+    </div>
+    <div class="about-content reveal">
+      <div class="section-label">About</div>
+      <h2>I shoot with intent,<br><em>edit with soul</em></h2>
+      <p>
+        I'm Alex Voss — a visual storyteller based between New York and wherever the light is best. With a camera in hand and wanderlust in my veins, I've spent the last eight years chasing extraordinary moments in ordinary places.
+      </p>
+      <p>
+        My work lives at the intersection of fine-art photography and content creation — built for screens, but crafted with the patience of a darkroom printer. I work with brands, musicians, travel companies, and humans who believe their story deserves to be told beautifully.
+      </p>
+      <div class="services-list">
+        <div class="service-item">Brand Photography</div>
+        <div class="service-item">Travel Content</div>
+        <div class="service-item">Portrait Sessions</div>
+        <div class="service-item">Reel Production</div>
+        <div class="service-item">Social Strategy</div>
+        <div class="service-item">Editing Presets</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Portfolio -->
+<section class="portfolio-section" id="work">
+  <div class="portfolio-header reveal">
+    <div>
+      <div class="section-label">Portfolio</div>
+      <h2 class="feed-title">Selected Work</h2>
+    </div>
+    <a href="#contact" class="btn btn-ghost">Commission a Project</a>
+  </div>
+  <div class="portfolio-grid reveal">
+    <div class="port-item">
+      <img src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?w=900&auto=format&fit=crop&q=80" alt="portfolio">
+      <div class="port-label"><div class="port-cat">Landscape</div><div class="port-name">Fjords of Norway</div></div>
+    </div>
+    <div class="port-item">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&auto=format&fit=crop&q=80" alt="portfolio">
+      <div class="port-label"><div class="port-cat">Travel</div><div class="port-name">Swiss Peaks</div></div>
+    </div>
+    <div class="port-item">
+      <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&auto=format&fit=crop&q=80" alt="portfolio">
+      <div class="port-label"><div class="port-cat">Portrait</div><div class="port-name">Anya K. × Studio</div></div>
+    </div>
+    <div class="port-item">
+      <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=500&auto=format&fit=crop&q=80" alt="portfolio">
+      <div class="port-label"><div class="port-cat">Architecture</div><div class="port-name">NYC After Rain</div></div>
+    </div>
+    <div class="port-item">
+      <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500&auto=format&fit=crop&q=80" alt="portfolio">
+      <div class="port-label"><div class="port-cat">Brand</div><div class="port-name">Zen Apparel</div></div>
+    </div>
+    <div class="port-item">
+      <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=500&auto=format&fit=crop&q=80" alt="portfolio">
+      <div class="port-label"><div class="port-cat">Editorial</div><div class="port-name">Golden Hour Series</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Social Channels -->
+<section class="socials-section">
+  <div class="reveal">
+    <div class="section-label">Follow the Journey</div>
+    <h2 class="feed-title" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--cream);">Find me everywhere</h2>
+  </div>
+  <div class="socials-grid reveal">
+    <a href="#" class="social-card">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--gold)"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      </div>
+      <div class="social-name">Instagram</div>
+      <div class="social-handle">@alexvoss</div>
+      <div class="social-followers"><span>412K</span>followers</div>
+    </a>
+    <a href="#" class="social-card">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="none" style="color:var(--gold)"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.72a4.85 4.85 0 01-1.02-.03z" fill="currentColor"/></svg>
+      </div>
+      <div class="social-name">TikTok</div>
+      <div class="social-handle">@alexvoss.lens</div>
+      <div class="social-followers"><span>284K</span>followers</div>
+    </a>
+    <a href="#" class="social-card">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--gold)"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#0a0906"/></svg>
+      </div>
+      <div class="social-name">YouTube</div>
+      <div class="social-handle">Alex Voss Creates</div>
+      <div class="social-followers"><span>98K</span>subscribers</div>
+    </a>
+    <a href="#" class="social-card">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--gold)"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </div>
+      <div class="social-name">Twitter/X</div>
+      <div class="social-handle">@alexvossphoto</div>
+      <div class="social-followers"><span>53K</span>followers</div>
+    </a>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials">
+  <div class="section-label reveal">What Clients Say</div>
+  <div class="quote-grid reveal">
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">Alex doesn't just take photos — he captures the essence of a brand in ways we couldn't articulate ourselves. Our campaign performed 3x above expectations.</p>
+      <div class="quote-author">
+        <img class="author-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="client">
+        <div class="author-info"><div class="name">SARAH CHEN</div><div class="role">CMO, Lumière Skincare</div></div>
+      </div>
+    </div>
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">The travel content Alex created for us drove a 60% spike in bookings. His eye for light and storytelling is unlike anything we've worked with before.</p>
+      <div class="quote-author">
+        <img class="author-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="client">
+        <div class="author-info"><div class="name">MARCO BIANCHI</div><div class="role">Director, Wanderlust Hotels</div></div>
+      </div>
+    </div>
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">I've worked with dozens of photographers over my career. Alex understands not just aesthetics, but the entire content ecosystem — he thinks in campaigns.</p>
+      <div class="quote-author">
+        <img class="author-avatar" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&auto=format&fit=crop&q=80" alt="client">
+        <div class="author-info"><div class="name">PRIYA NAIR</div><div class="role">Creative Director, FORM Agency</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="contact-section">
+    <div class="contact-content reveal">
+      <div class="section-label">Contact</div>
+      <h2>Let's create<br>something <em>unforgettable</em></h2>
+      <p>Available for brand collaborations, editorial commissions, event coverage, and content partnerships. Based in New York — available worldwide.</p>
+      <div class="contact-info">
+        <a href="/cdn-cgi/l/email-protection#b3dbd6dfdfdcf3d2dfd6cbc5dcc0c09dd0dcde" class="contact-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <span class="__cf_email__" data-cfemail="b4dcd1d8d8dbf4d5d8d1ccc2dbc7c79ad7dbd9">[email&#160;protected]</span>
+        </a>
+        <a href="tel:+12125550199" class="contact-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          +1 (212) 555-0199
+        </a>
+        <a href="#" class="contact-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          New York, NY · Available Worldwide
+        </a>
+      </div>
+    </div>
+    <form class="reveal" onsubmit="handleSubmit(event)">
+      <div class="form-group">
+        <label class="form-label">Your Name</label>
+        <input type="text" class="form-input" placeholder="Full name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="you@company.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Project Type</label>
+        <input type="text" class="form-input" placeholder="Brand, Travel, Portrait...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tell Me More</label>
+        <textarea class="form-textarea" placeholder="Describe your vision..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;display:block;text-align:center;">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">ALEX<span>.</span>VOSS</div>
+  <div class="footer-copy">© 2025 Alex Voss. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Instagram</a>
+    <a href="#">TikTok</a>
+    <a href="#">YouTube</a>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 4 + 'px';
+    cursor.style.top = my - 4 + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Nav scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+
+  // ─── Instagram Feed Integration ───────────────────────────────────────────
+  // The endpoint below points to your serverless function (Netlify or Vercel).
+  // It keeps your access token hidden server-side.
+  const IG_API_ENDPOINT = "/api/instagram"; // same for both Netlify & Vercel
+
+  const feedGrid   = document.getElementById("feedGrid");
+  const feedStatus = document.getElementById("feedStatus");
+  const feedLoading= document.getElementById("feedLoading");
+  const feedError  = document.getElementById("feedError");
+
+  // All fetched posts stored here so tab filtering works without re-fetching
+  let allPosts = [];
+
+  function timeAgo(isoString) {
+    const diff = (Date.now() - new Date(isoString)) / 1000;
+    if (diff < 3600)   return Math.floor(diff / 60) + "m ago";
+    if (diff < 86400)  return Math.floor(diff / 3600) + "h ago";
+    if (diff < 604800) return Math.floor(diff / 86400) + "d ago";
+    return new Date(isoString).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  }
+
+  function typeIcon(type) {
+    if (type === "VIDEO")          return "▶ Video";
+    if (type === "CAROUSEL_ALBUM") return "⊞ Carousel";
+    return "◻ Photo";
+  }
+
+  function truncate(str, len = 90) {
+    if (!str) return "";
+    return str.length > len ? str.slice(0, len).trimEnd() + "…" : str;
+  }
+
+  function buildCard(post) {
+    const card = document.createElement("div");
+    card.className = "post-card";
+    card.dataset.platform = "instagram";
+
+    card.innerHTML = `
+      <img
+        src="${post.url}"
+        alt="Instagram post"
+        loading="lazy"
+        onerror="this.closest('.post-card').style.display='none'"
+      >
+      <div class="post-overlay">
+        <div class="ig-badge">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+          </svg>
+          @yeoguess · ${timeAgo(post.timestamp)}
+        </div>
+        <div class="post-caption">${truncate(post.caption)}</div>
+        <div class="post-stats">
+          <div class="stat">${typeIcon(post.type)}</div>
+          <a href="${post.permalink}" target="_blank" rel="noopener"
+             style="color:var(--gold);font-size:0.6rem;letter-spacing:0.1em;text-decoration:none;margin-left:auto;">
+            View on IG →
+          </a>
+        </div>
+      </div>
+    `;
+
+    // Open Instagram post on click
+    card.addEventListener("click", () => window.open(post.permalink, "_blank", "noopener"));
+    return card;
+  }
+
+  function renderPosts(posts) {
+    feedGrid.innerHTML = "";
+    if (!posts.length) {
+      feedGrid.innerHTML = `<p style="color:var(--muted);font-size:0.75rem;letter-spacing:0.1em;padding:40px 0;">No posts to display.</p>`;
+      return;
+    }
+    posts.forEach(p => feedGrid.appendChild(buildCard(p)));
+  }
+
+  async function loadInstagramFeed() {
+    feedStatus.style.display = "block";
+    feedLoading.style.display = "flex";
+    feedError.style.display   = "none";
+    feedGrid.innerHTML = "";
+
+    try {
+      const res = await fetch(IG_API_ENDPOINT);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      allPosts = data.media || [];
+      feedStatus.style.display = "none";
+      renderPosts(allPosts);
+
+      // Re-apply active tab filter if one is selected
+      const activeTab = document.querySelector(".tab.active");
+      if (activeTab && activeTab.dataset.filter !== "all") {
+        filterFeed(activeTab.dataset.filter, activeTab);
+      }
+    } catch (err) {
+      feedLoading.style.display = "none";
+      feedError.style.display   = "block";
+      feedError.textContent = `⚠ Could not load Instagram feed: ${err.message}`;
+      console.error("Instagram feed error:", err);
+    }
+  }
+
+  // Tab filtering — now works with real posts
+  function filterFeed(platform, btn) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+
+    if (platform === "instagram") {
+      renderPosts(allPosts); // all fetched posts ARE instagram
+    } else {
+      // Other platforms: hide the IG grid and show a placeholder
+      feedGrid.innerHTML = `
+        <p style="color:var(--muted);font-size:0.75rem;letter-spacing:0.15em;padding:40px 0;grid-column:1/-1;">
+          Live feed integration coming soon for this platform.
+        </p>`;
+    }
+  }
+
+  // Attach filter data attributes to tabs
+  document.querySelectorAll(".tab").forEach(tab => {
+    const text = tab.textContent.trim().toLowerCase();
+    if (text.includes("all"))       tab.dataset.filter = "all";
+    else if (text.includes("inst")) tab.dataset.filter = "instagram";
+    else if (text.includes("tik"))  tab.dataset.filter = "tiktok";
+    else if (text.includes("you"))  tab.dataset.filter = "youtube";
+    else                            tab.dataset.filter = "twitter";
+
+    tab.onclick = () => {
+      const f = tab.dataset.filter;
+      if (f === "all" || f === "instagram") {
+        filterFeed(f, tab);
+      } else {
+        filterFeed(f, tab);
+      }
+    };
+  });
+
+  // Kick off the feed load
+  loadInstagramFeed();
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector
